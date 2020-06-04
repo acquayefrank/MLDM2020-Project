@@ -94,5 +94,56 @@ Since the accuracy of such a model is dependent on the freshness of the data, th
 In this project we use frozen dataset i.e dataset that has been frozen in time and this dataset can be found \href{https://github.com/acquayefrank/MLDM2020-Project/tree/master/data}{here}
 
 \subsection{Basic exploratory data analysis}
+The dataset for training consists of $8$ primary variables with a total of $914232$ line items. $1.6\%$  of the line items contained missing data. \emph{Figure 1} shows the a preview of the first five line items in training dataset.  Upon further investigations we realise that most instances had $Country = NaN$, also $Province\_State = Nan$ except in cases where the $Country\_Region = U.S.A$. For this reason we exempted these two variables or attributes. In the exploratory stage, there is no clear description of the weight parameter, but we may experiment with it, to see how it impacts predictions but most likely we may drop it. 
+\\
+\\
+ \emph{Figure 2} shows the first five rows of the data for testing. One can easily realise that the target value was not supplied, for this reason we will drop the test dataset and split our training dataset in a manner that allows us to test our models.
+ \\
+ \\
+ We split our training data into \emph{confirmed cases} and  \emph{fatalities}. This can be confirmed from  \emph{Figure 3}. 
+ A simple summary statistic of confirmed cases and fatalities is shown is shown in \emph{Figure 4} and \emph{Figure 5}.
+ \\
+ We tried to have a fair understanding of the growth rate of confirmed cases globally by week and it seems exponential. This can be seen if   \emph{Figure 6}
+ 
+ In order to have a better understanding of the data, kindly follow the links below to view a detailed report of our \href{https://acquayefrank.github.io/MLDM2020-Project/}{EDA}. To preview the profile of [train.csv] follow \href{https://acquayefrank.github.io/MLDM2020-Project/output_train.html}{this} link. To preview the profile of [test.csv] follow \href{ https://acquayefrank.github.io/MLDM2020-Project/output_test.html}{this} link. To view a plot of fatalities vs first infections kindly follow \href{https://acquayefrank.github.io/MLDM2020-Project/firstinfect_and_fatal.html}{this} link
+ 
 
+ 
+ 
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{train_head.png}
+  \caption{Preview of first five line items in training dataset.}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{test_head.png}
+  \caption{Preview of first five line items in test dataset.}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{target_values.png}
+  \caption{Instances of confirmed cases and instances of fatalities.}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{fatalities.png}
+  \caption{Summary statistics of fatalities.}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{confirmed_cases_summary_statistics.png}
+  \caption{Summary statistics of confirmed cases.}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{week_vs_confirmed_cases.png}
+  \caption{Number of confirmed cases by week.}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{first_infection_first_deaths.png}
+  \caption{A distribution of first infections vs first deaths.}
+\end{figure}
 \end{document}
