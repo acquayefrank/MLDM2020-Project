@@ -1,7 +1,7 @@
 \documentclass{article}
 
 % if you need to pass options to natbib, use, e.g.:
-%     \PassOptionsToPackage{numbers, compress}{natbib}
+\PassOptionsToPackage{numbers, compress}{natbib}
 % before loading neurips_2019
 
 % ready for submission
@@ -28,6 +28,7 @@
 \usepackage{graphicx}
 
 \graphicspath{{images/}} 
+\bibliographystyle{unsrtnat}
 
 \title{Forecasting daily COVID-19 spread in regions around the world.}
 
@@ -74,5 +75,24 @@
 \begin{abstract}
 
 \end{abstract}
+
+\section{Problem statement:}
+The year 2020 will forever be remembered as the year the earth stood still. This is  primarily due to the spread of \href{https://en.wikipedia.org/wiki/Coronavirus_disease_2019}{COVID-19}. As Data Scientists we seek to provide solutions to problems facing humanity and the world at large. In this regard we seek to develop a forecasting model that will predict the daily spread of COVID-19 in regions around the world.  Our model predicts the number of daily new cases in regions around the world in order to help policy makers plan and manage the COVID-19 pandemic.  
+
+\section{Dataset summary and EDA:}
+
+\subsection{Background of dataset:}
+The White House Office of Science and Technology Policy (OSTP) pulled together a coalition of research groups and companies (including Kaggle) to prepare the \href{https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge}{COVID-19 Open Research Dataset (CORD-19)} to attempt to address \href{https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge/tasks}{key open scientific questions on COVID-19}. Those questions are drawn from \href{https://www.nationalacademies.org/event/03-11-2020/standing-committee-on-emerging-infectious-diseases-and-21st-century-health-threats-virtual-meeting-1}{National Academies of Sciences, Engineering, and Medicine’s (NASEM)} and the \href{https://www.who.int/blueprint/priority-diseases/key-action/Global_Research_Forum_FINAL_VERSION_for_web_14_feb_2020.pdf?ua=1}{World Health Organization (WHO)}.
+
+\subsection{Data sources:}
+The sources of data used in this project can be obtained from \href{https://www.kaggle.com/c/covid19-global-forecasting-week-5/overview}{Kaggle Dataset}
+
+\subsection{Actual data:}
+Since the accuracy of such a model is dependent on the freshness of the data, the most up to date data can be found \href{https://www.kaggle.com/c/covid19-global-forecasting-week-5/overview}{here}
+
+\subsection{Actual data used in project:}
+In this project we use frozen dataset i.e dataset that has been frozen in time and this dataset can be found \href{https://github.com/acquayefrank/MLDM2020-Project/tree/master/data}{here}
+
+\subsection{Basic exploratory data analysis}
 
 \end{document}
