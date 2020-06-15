@@ -93,7 +93,7 @@ Since the accuracy of such a model is dependent on the freshness of the data, th
 \subsection{Actual data used in project:}
 In this project we use frozen dataset i.e dataset that has been frozen in time and this dataset can be found \href{https://github.com/acquayefrank/MLDM2020-Project/tree/master/data}{here}
 
-\subsection{Basic exploratory data analysis}
+\subsection{Basic exploratory data analysis:}
 The dataset for training consists of $8$ primary variables with a total of $914232$ line items. $1.6\%$  of the line items contained missing data. \emph{Figure 1} shows the a preview of the first five line items in training dataset.  Upon further investigations we realise that most instances had $Country = NaN$, also $Province\_State = Nan$ except in cases where the $Country\_Region = U.S.A$. For this reason we exempted these two variables or attributes. In the exploratory stage, there is no clear description of the weight parameter, but we may experiment with it, to see how it impacts predictions but most likely we may drop it. 
 \\
 \\
@@ -146,4 +146,77 @@ The dataset for training consists of $8$ primary variables with a total of $9142
   \includegraphics[width=\columnwidth]{first_infection_first_deaths.png}
   \caption{A distribution of first infections vs first deaths.}
 \end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{covid_top_n_countries.png}
+  \caption{Most inpacted countries.}
+\end{figure}
+\section{Methodology:}
+\subsection{Data Cleaning:}
+\begin{itemize}
+\item We discovered negative values in the TargetValue field, for this reason we computed the absolute value for all TargetValues
+\item We dropped all rows that had their Province\_State filled out. This was primarily due to the fact that this field was mostly set for America. This made the data skewed more towards American provinces
+\end{itemize}
+\subsection{Data Enrichment:}
+We obtained population by country \href{https://github.com/acquayefrank/MLDM2020-Project/blob/master/data/population_by_country_2020.csv}{data} and selected some fields to enrich our data.
+We added the:
+\begin{itemize}
+  \item  population density
+  \item  population median age
+  \item  urban population  percentage
+\end{itemize}
+\subsection{Feature Engineering:}
+\begin{itemize}
+\item We extracted the week from the date
+\item We extracted the day from the date
+\item We extracted the weekday from the date
+\item We computed the date since the first infection was recorded in a country
+\item We split our data into recorded fatalities and number of confirmed cases by day
+\item We then did a one hot encoding for all countries listed in our data
+\item We dropped the Id, County and Province\_State columns since we realised it negatively impacted predictions as depicted in \emph{Figure 9}. The feature Unnamed is the Id field
+\end{itemize}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{feature_importance.png}
+  \caption{Feature Importance after some experimental models were created (Random Forest).}
+\end{figure}
+
+\section{Experiment setup and results; error analysis:}
+Our initial approach was to experiment with trees and obtain feature importance, then create a regression models with these features. But during our experiments we realised trees performed better. More importantly ensemble learning methods performed better.
+\\
+\\
+Since our test data had no labels we split our training data into test and training. We split the data based on date. All dates after `2020-05-20` were placed in our test data and dates after  `2020-05-20` were placed in training data.
+
+\begin{tabular}{ |p{5cm}||p{3cm}||p{5cm}|  }
+ \hline
+ \multicolumn{3}{|c|}{Model Analysis} \\
+ \hline
+ \hline
+Model   & R2 Score & Comments\\
+ \hline
+ \hline
+ Ridge Regression   & -404026.412 & Performs badly  \\
+   \hline
+ ElasticNet  & 0.079 & Relatively better than Ridge Regression \\
+  \hline
+   ExtraTreesClassifier & 0.217 & Relatively better than Ridge Regression \\
+ \hline
+  Linear Regression   & 0.475 & Relatively better than Ridge Regression \\
+  \hline
+SGDRegressor   & 0.518 & Relatively better than Linear Regression \\
+  \hline
+  GradientBoostingRegressor & 0.787 &  One of our top 4 models \\
+   \hline
+  HistGradientBoostingRegressor & 0.862 &  One of our top 4 models \\
+  \hline
+  RandomForestRegressor & 0.892 &  One of our top 4 models \\
+  \hline
+   DecisionTreeRegressor & 0.899&  One of our top 4 models \\
+  \hline
+\end{tabular}
+
+\section{Discussion:}
+\section{Conclusion:}
 \end{document}
