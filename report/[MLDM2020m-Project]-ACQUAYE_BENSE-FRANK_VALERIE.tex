@@ -85,7 +85,10 @@ The year 2020 will forever be remembered as the year the earth stood still. This
 The White House Office of Science and Technology Policy (OSTP) pulled together a coalition of research groups and companies (including Kaggle) to prepare the \href{https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge}{COVID-19 Open Research Dataset (CORD-19)} to attempt to address \href{https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge/tasks}{key open scientific questions on COVID-19}. Those questions are drawn from \href{https://www.nationalacademies.org/event/03-11-2020/standing-committee-on-emerging-infectious-diseases-and-21st-century-health-threats-virtual-meeting-1}{National Academies of Sciences, Engineering, and Medicine’s (NASEM)} and the \href{https://www.who.int/blueprint/priority-diseases/key-action/Global_Research_Forum_FINAL_VERSION_for_web_14_feb_2020.pdf?ua=1}{World Health Organization (WHO)}.
 
 \subsection{Data sources:}
-The sources of data used in this project can be obtained from \href{https://www.kaggle.com/c/covid19-global-forecasting-week-5/overview}{Kaggle Dataset}
+The sources of data used in this project can be obtained from \href{https://www.kaggle.com/c/covid19-global-forecasting-week-5/overview}{Kaggle Dataset}.
+Furthermore we choose to enrich the dataset with data on the population in the different countries. Data such as population density, percentage of urban population and median age.
+This data was obtained from \href{https://www.kaggle.com/tanuprabhu/population-by-country-2020}{Kaggle} aswell. 
+
 
 \subsection{Actual data:}
 Since the accuracy of such a model is dependent on the freshness of the data, the most up to date data can be found \href{https://www.kaggle.com/c/covid19-global-forecasting-week-5/overview}{here}
@@ -156,7 +159,7 @@ The dataset for training consists of $8$ primary variables with a total of $9142
 \subsection{Data Cleaning:}
 \begin{itemize}
 \item We discovered negative values in the TargetValue field, for this reason we computed the absolute value for all TargetValues
-\item We dropped all rows that had their Province\_State filled out. This was primarily due to the fact that this field was mostly set for America. This made the data skewed more towards American provinces
+\item We dropped all rows that had their Province\_State filled out. This was primarily due to the fact that this field was mostly set for a limited number of countries, such as $US$, $UK$ and $China$. This made the data skewed more towards American, United Kingdom and Chinese regions. 
 \end{itemize}
 \subsection{Data Enrichment:}
 We obtained population by country \href{https://github.com/acquayefrank/MLDM2020-Project/blob/master/data/population_by_country_2020.csv}{data} and selected some fields to enrich our data.
@@ -167,6 +170,11 @@ We added the:
   \item  urban population  percentage
 \end{itemize}
 \subsection{Feature Engineering:}
+
+To create a sufficient model it is of course important to give the model the best features to work with. As stated in a previous section, data on $Population density, Urban population and Median age$ was added. Also  it was chosen to treat the time-series data $Date$ as more numerical values. From the date the number of the week, the number of the day, the day in the week and the number of days since the first confirmed case(s) were derived. 
+From Permutation importance and impurity based feature importance, stemming from $Random Forest Regressor$, it was found that these alterations indeed resulted in important features. In \emph{figure 11} and \emph{figure 12} we can find that the Permutation difference for the different datasets are fairly similar, although the feature for Population Density seems to be slightly more important in the fatalities dataset than in the confirmed cases dataset. 
+The feature importances that were derived from the same $Random Forest Regressor$ look similar, however give less of an importance to the Country being the $US$. The plots for the feature importances can be found in \emph{figure 9} and \emph{figure 10}.
+
 \begin{itemize}
 \item We extracted the week from the date
 \item We extracted the day from the date
@@ -179,15 +187,35 @@ We added the:
 
 \begin{figure}
   \centering
-  \includegraphics[width=\columnwidth]{feature_importance.png}
-  \caption{Feature Importance after some experimental models were created (Random Forest).}
+  \includegraphics[width=\columnwidth]{feature-imp-f-randfor.png}
+  \caption{Feature Importance for confirmed cases dataset after some experimental models were created (Random Forest).}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\columnwidth]{feature-imp-f-randfor.png}
+  \caption{Feature Importance for fatalities dataset after some experimental models were created (Random Forest).}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{feature-permutation-importance-cc-data.png}
+    \caption{Permutation importance for confirmed cases dataset.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics{feature-permutation-importance-f-data.png}
+    \caption{Permutation importance for fatalities dataset.}
 \end{figure}
 
 \section{Experiment setup and results; error analysis:}
-Our initial approach was to experiment with trees and obtain feature importance, then create a regression models with these features. But during our experiments we realised trees performed better. More importantly ensemble learning methods performed better.
+Our initial approach was to experiment with trees and obtain feature importance, then create regression models with these features. But during our experiments we realised trees performed better. More importantly ensemble learning methods performed better.
 \\
 \\
-Since our test data had no labels we split our training data into test and training. We split the data based on date. All dates after `2020-05-20` were placed in our test data and dates after  `2020-05-20` were placed in training data.
+Since the official test dataset provided by Kaggle had no labels, we discarded that dataset and split our training data into test and training. We split the data based on date. All dates after `2020-05-20` were placed in our test data and dates after  `2020-05-20` were placed in training data.
+
+As can be seen from the table, we have experimented with several models, to find that Tree-based ensemble methods perform best on this dataset. Therefore it was chosen to optimize those models. 
 
 \begin{tabular}{ |p{5cm}||p{3cm}||p{5cm}|  }
  \hline
@@ -207,7 +235,7 @@ Model   & R2 Score & Comments\\
   \hline
 SGDRegressor   & 0.518 & Relatively better than Linear Regression \\
   \hline
-  GradientBoostingRegressor & 0.787 &  One of our top 4 models \\
+  GradientBoostingRegressor & 0.7979 &  One of our top 4 models \\
    \hline
   HistGradientBoostingRegressor & 0.862 &  One of our top 4 models \\
   \hline
@@ -218,5 +246,32 @@ SGDRegressor   & 0.518 & Relatively better than Linear Regression \\
 \end{tabular}
 
 \section{Discussion:}
+
+In this section the different models and their results, before and after hyperparameter optimization will be discussed. The models we have chosen to optimize were the models that in our initial test performed best. Interestingly, the four best performing models are all, but one, Tree-based Ensemble models. The Decision Tree Regressor is not an ensemble model, but it is a tree-based model. The ensemble technique combines predictions from several machine learning algorithms, in order to make more accurate predictions. 
+The first two ensemble models we will discuss are Boosting models, which entails that each model that is build will learn which features to focus on from the previous model. 
+
+\subsection{Gradient Boosting Regressor:}
+
+Gradient Boosting is a method in which a prediction model is constructed as an ensemble of prediction models, often decision trees. In the sklearn implementation of this model a regression tree is fitted on a negative gradient, and aims to minimize the given loss function. 
+This model performed decently on the default hyperparameters, achieving a $r2 score$ of $0.7979$ for both datasets. To optimize this model $Random Search$ was used, from different trials it came forth that best results come when leaving a large part of the hyperparameters on their default setting, but tuning the $learning rate$, $max depth$ and the $minimum samples per leaf$. The model achieved a $r2 score$ on the confirmed cases dataset of 0.8469 and on the fatality dataset of 0.8429. 
+
+\subsection{Hist Gradient Boosting Regressor:}
+The Hist Gradient Boosting Regressor is quite similar in its workings to the previously discussed model, it is however optimized for big datasets, where the number of datapoints exceed 10.000. 
+It outperforms the normal gradient boosting regressor by 0.862 $r2 score$. This might be explained by the way this estimator splits and handles the data (as histograms instead of ordered features). 
+After optimization of the hyperparameters the $r2 score$ is ...
+
+\subsection{Random Forest Regressor:}
+The Random forest is a technique where multiple decision trees are build, the predicted score (for regression) is often the mean prediction of all the individual trees. This ensemble model employs bagging technique, in which there is no interaction between the decision trees whilst building them. 
+Random Forests are often praised for their robustness in comparison to a decision tree. 
+On our datasets The Random Forest Regressor performs rather well, achieving a $r2 score$ of 0.892 on the confirmed cases dataset, with default parameters. After optimization of the following parameters we achieved an $r2 score$ of ...
+
+\subsection{Decision Tree Regressor:}
+Decision Trees are build in a tree structure, it breaks down a dataset into smaller subsets, where at each node a decision must be made. In our case a decision could look like: $Week <= 12$, after this decision the tree splits in subtrees. The more explanatory power a decision has, the higher up the decision will be in the tree. The most important decision node is call the root node. The mentioned explanatory power depends on the metric used, from the optimization we derive the $MSE$ is the best metric for this dataset. 
+The Sklearn implementation of Decision Tree Regressor with default hyperparameters already gives rather good results with an $R2 score$ of 0.899. After hyperparameter optimization with Random Search the highest $R2 score$ achieved was ... 
+
+
+
+
 \section{Conclusion:}
+We realized esemble learning regressors performed better with the key feature being days since first infection was recorded in a country/region.
 \end{document}
