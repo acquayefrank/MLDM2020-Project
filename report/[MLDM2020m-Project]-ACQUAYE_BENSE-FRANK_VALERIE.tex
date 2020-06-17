@@ -47,7 +47,7 @@
   \texttt{fakvey@edu.hse.ru} \\
   % examples of more authors
   \And
-  Bense Valerie Caroline \\
+  Valérie Caroline Bense \\
   Faculty of Computer Science\\
   National Research University Higher School of Economics\\
    \texttt{vbense@edu.hse.ru} \\
@@ -73,7 +73,7 @@
 \maketitle
 
 \begin{abstract}
-
+Using trees and ensemble regression models we can forecast corona fatalities per day per country as well as the confirmed cases per day per country. With each model having at least a 70\% accuracy. 
 \end{abstract}
 
 \section{Problem statement:}
@@ -87,7 +87,7 @@ The White House Office of Science and Technology Policy (OSTP) pulled together a
 \subsection{Data sources:}
 The sources of data used in this project can be obtained from \href{https://www.kaggle.com/c/covid19-global-forecasting-week-5/overview}{Kaggle Dataset}.
 Furthermore we choose to enrich the dataset with data on the population in the different countries. Data such as population density, percentage of urban population and median age.
-This data was obtained from \href{https://www.kaggle.com/tanuprabhu/population-by-country-2020}{Kaggle} aswell. 
+This data was obtained from \href{https://www.kaggle.com/tanuprabhu/population-by-country-2020}{Kaggle} as well. 
 
 
 \subsection{Actual data:}
@@ -106,7 +106,7 @@ The dataset for training consists of $8$ primary variables with a total of $9142
  We split our training data into \emph{confirmed cases} and  \emph{fatalities}. This can be confirmed from  \emph{Figure 3}. 
  A simple summary statistic of confirmed cases and fatalities is shown is shown in \emph{Figure 4} and \emph{Figure 5}.
  \\
- We tried to have a fair understanding of the growth rate of confirmed cases globally by week and it seems exponential. This can be seen if   \emph{Figure 6}
+ We tried to have a fair understanding of the growth rate of confirmed cases globally by week and it seems exponential. This can be seen in   \emph{Figure 6}
  
  In order to have a better understanding of the data, kindly follow the links below to view a detailed report of our \href{https://acquayefrank.github.io/MLDM2020-Project/}{EDA}. To preview the profile of [train.csv] follow \href{https://acquayefrank.github.io/MLDM2020-Project/output_train.html}{this} link. To preview the profile of [test.csv] follow \href{ https://acquayefrank.github.io/MLDM2020-Project/output_test.html}{this} link. To view a plot of fatalities vs first infections kindly follow \href{https://acquayefrank.github.io/MLDM2020-Project/firstinfect_and_fatal.html}{this} link
  
@@ -171,10 +171,13 @@ We added the:
 \end{itemize}
 \subsection{Feature Engineering:}
 
-To create a sufficient model it is of course important to give the model the best features to work with. As stated in a previous section, data on $Population density, Urban population and Median age$ was added. Also  it was chosen to treat the time-series data $Date$ as more numerical values. From the date the number of the week, the number of the day, the day in the week and the number of days since the first confirmed case(s) were derived. 
-From Permutation importance and impurity based feature importance, stemming from $Random Forest Regressor$, it was found that these alterations indeed resulted in important features. In \emph{figure 11} and \emph{figure 12} we can find that the Permutation difference for the different datasets are fairly similar, although the feature for Population Density seems to be slightly more important in the fatalities dataset than in the confirmed cases dataset. 
-The feature importances that were derived from the same $Random Forest Regressor$ look similar, however give less of an importance to the Country being the $US$. The plots for the feature importances can be found in \emph{figure 9} and \emph{figure 10}.
-
+To create a sufficient model it is of course important to give the model the best features to work with. As stated in a previous section, data on \emph{Population density, Urban population and Median age} was added. Also  it was chosen to treat the time-series data $Date$ as more numerical values. From the date the number of the week, the number of the day, the day in the week and the number of days since the first confirmed case(s) were derived. 
+From Permutation importance and impurity based feature importance, stemming from \emph{Random Forest Regressor}, it was found that these alterations indeed resulted in important features. In \emph{figure 11} and \emph{figure 12} we can find that the Permutation difference for the different datasets are fairly similar, although the feature for Population Density seems to be slightly more important in the fatalities dataset than in the confirmed cases dataset. 
+The feature importances that were derived from the same \emph{Random Forest Regressor} look similar, however give less of an importance to the Country being the $US$. The plots for the feature importances can be found in \emph{figure 9} and \emph{figure 10}.
+\\
+\\
+\\
+\emph{Specific features that were engineered:}
 \begin{itemize}
 \item We extracted the week from the date
 \item We extracted the day from the date
@@ -222,7 +225,7 @@ As can be seen from the table, we have experimented with several models, to find
  \multicolumn{3}{|c|}{Model Analysis} \\
  \hline
  \hline
-Model   & R2 Score for Confirmed Cases & Comments\\
+Model   & R2 Score on Confirmed Cases & Comments\\
  \hline
  \hline
  Ridge Regression   & -404026.412 & Performs badly  \\
@@ -247,31 +250,33 @@ SGDRegressor   & 0.518 & Relatively better than Linear Regression \\
 
 \section{Discussion:}
 
-In this section the different models and their results, before and after hyperparameter optimization will be discussed. The models we have chosen to optimize were the models that in our initial test performed best. Interestingly, the four best performing models are all, but one, Tree-based Ensemble models. The Decision Tree Regressor is not an ensemble model, but it is a tree-based model. The ensemble technique combines predictions from several machine learning algorithms, in order to make more accurate predictions. 
+In this section the different models and their results will be discussed. The models we have chosen to discuss were the models that in our initial test performed best. Interestingly, the four best performing models are all, but one, Tree-based Ensemble models. The Decision Tree Regressor is not an ensemble model, but it is a tree-based model. The ensemble technique combines predictions from several machine learning algorithms, in order to make more accurate predictions. 
 The first two ensemble models we will discuss are Boosting models, which entails that each model that is build will learn which features to focus on from the previous model. 
 
 \subsection{Gradient Boosting Regressor:}
 
 Gradient Boosting is a method in which a prediction model is constructed as an ensemble of prediction models, often decision trees. In the sklearn implementation of this model a regression tree is fitted on a negative gradient, and aims to minimize the given loss function. 
-This model performed decently on the default hyperparameters, achieving a $r2 score$ of $0.7979$ for both datasets. To optimize this model $Random Search$ was used, from different trials it came forth that best results come when leaving a large part of the hyperparameters on their default setting, but tuning the $learning rate$, $max depth$ and the $minimum samples per leaf$. The model achieved a $r2 score$ on the confirmed cases dataset of 0.8469 and on the fatality dataset of 0.8429. 
+This model performed decently on the default hyperparameters, achieving a \emph{r2 score} of $0.7979$ for the confirmed cases and \emph{r2 score} 0.653 for the fatality dataset. To optimize this model \emph{Random Search} was used, from different trials it came forth that best results come when leaving a large part of the hyperparameters on their default setting, but tuning the \emph{learning rate, max depth and the minimum samples per leaf}. The model achieved a \emph{r2 score} on the confirmed cases dataset of 0.8469 and on the fatality dataset of 0.745. 
 
 \subsection{Hist Gradient Boosting Regressor:}
 The Hist Gradient Boosting Regressor is quite similar in its workings to the previously discussed model, it is however optimized for big datasets, where the number of datapoints exceed 10.000. 
-It outperforms the normal gradient boosting regressor by 0.862 $r2 score$. This might be explained by the way this estimator splits and handles the data (as histograms instead of ordered features). 
-After optimization of the hyperparameters the $r2 score$ is ...
+It outperforms the normal gradient boosting regressor by 0.862 \emph{r2 score}. This might be explained by the way this estimator splits and handles the data (as histograms instead of ordered features). 
 
 \subsection{Random Forest Regressor:}
-The Random forest is a technique where multiple decision trees are build, the predicted score (for regression) is often the mean prediction of all the individual trees. This ensemble model employs bagging technique, in which there is no interaction between the decision trees whilst building them. 
+The Random forest is a technique where multiple decision trees are built, the predicted score (for regression) is often the mean prediction of all the individual trees. This ensemble model employs bagging technique, in which there is no interaction between the decision trees whilst building them. 
 Random Forests are often praised for their robustness in comparison to a decision tree. 
-On our datasets The Random Forest Regressor performs rather well, achieving a $r2 score$ of 0.892 on the confirmed cases dataset, with default parameters. After optimization of the following parameters we achieved an $r2 score$ of ...
+On our datasets The Random Forest Regressor performs rather well, achieving a \emph{r2 score} of 0.892 on the confirmed cases dataset, with default parameters.
 
 \subsection{Decision Tree Regressor:}
-Decision Trees are build in a tree structure, it breaks down a dataset into smaller subsets, where at each node a decision must be made. In our case a decision could look like: $Week <= 12$, after this decision the tree splits in subtrees. The more explanatory power a decision has, the higher up the decision will be in the tree. The most important decision node is call the root node. The mentioned explanatory power depends on the metric used, from the optimization we derive the $MSE$ is the best metric for this dataset. 
-The Sklearn implementation of Decision Tree Regressor with default hyperparameters already gives rather good results with an $R2 score$ of 0.899. After hyperparameter optimization with Random Search the highest $R2 score$ achieved was ... 
+Decision Trees are build in a tree structure, it breaks down a dataset into smaller subsets, where at each node a decision must be made. In our case a decision could look like: $Week <= 12$, after this decision the tree splits in subtrees. The more explanatory power a decision has, the higher up the decision will be in the tree. The most important decision node is called the root node. The mentioned explanatory power depends on the metric used, from the optimization we derive the $MSE$ is the best metric for this dataset. 
+The Sklearn implementation of Decision Tree Regressor with default hyperparameters already gives rather good results with an \emph{r2 score} of 0.899 on the confirmed cases dataset. After hyperparameter optimization with Random Search the highest \emph{r2 score} achieved was 0.907. The default hyperparameters of the sklearn implementation of the decision tree for regression problems were already fairly well suited to our dataset. However on the fatalities dataset the default parameters seem to perform less well, with an \emph{r2 score} of 0.774, the Random Search brought the \emph{r2 score} to 0.788.
 
 
 
 
 \section{Conclusion:}
-We realized esemble learning regressors performed better with the key feature being days since first infection was recorded in a country/region.
+From this research we have realized that  trees and ensemble regression models work well to forecast both the corona fatalities per day per country and the confirmed cases per day per country. 
+
+We our learning regressors performed better with the key feature being days since first infection was recorded in a country/region. 
+
 \end{document}
